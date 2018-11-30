@@ -90,7 +90,7 @@ if (FASTWEL_TESTS)
 
     include_directories(3rdparty/catch2/single_include/catch2)
 endif ()
-
+add_definitions(-DFASTWEL_EMULATE)
 add_subdirectory(src_c/common)
 add_subdirectory(src_c/dummy)
 add_subdirectory(src_c/p55)

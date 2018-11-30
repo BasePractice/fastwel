@@ -1,13 +1,7 @@
-// Пример программирования UNIO для варианта p55.
-// Подсчитываются события по входам 0-23 (фронт события задается
-// в параметрах).
-// Используется прерывание IRQ5.
-
-
-#include <bios.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <dos.h>
+#include <DOS.H>
+#include <BIOS.H>
 
 #define    IRQ            5
 #define    IRQMask        0x20
@@ -32,13 +26,12 @@ unsigned int Td = 3, Fr = 1;
 void main(int arg, char **av) {
     unsigned int i, k;
 
-    printf("\x1b[2J");    // Clear Screen (SmartLink)
     if ( arg > 1 && (*av[1] == '/' || *av[1] == '?')) {
         printf(
                 "ct_p55i Fr Td\n"
                 "         |  |\n"
-                "         |  +--- Код времени антидребезга (коды 0-3)\n"
-                "         +------ Код фронт события        (коды 0-3)\n"
+                "         |  +--- time freq (code 0-3)\n"
+                "         +------ front (code 0-3)\n"
         );
         return;
     }
@@ -46,27 +39,28 @@ void main(int arg, char **av) {
     if (arg > 1) {
         sscanf(av[1], "%d", &Fr);
         if (Fr > 3) {
-            printf("Код фронта д.б. от 0 до 3");
+            printf("Front must be 0 to 3");
             return;
         }
     }
     if (arg > 2) {
         sscanf(av[2], "%d", &Td);
         if (Td > 3) {
-            printf("Код частоты д.б. от 0 до 3");
+            printf("Time freq must be 0 to 3");
             return;
         }
     }
 
-    printf("UNIOxx-5 Код Схемы:\"p55\"  Fastwel,(c)2000\n");
+    printf("UNIOxx-5 schema:\"p55\"  Fastwel,(c)2000\n");
     // -- Определить Базовый адрес ----
     for (BA = 0x100; BA < 0x400; BA += 0x10)
         if ((inportb(BA + 0xA00E) == 'p') && (inportb(BA + 0xA00F) == 55))
             break;
     if (BA == 0x400) {
-        printf("Код Схемы\"p55\"не загружен !");
+        printf("Scheme \"p55\" not loaded!");
         return;
-    } else printf("Базовый адрес модуля UNIOxx-5 определен:%Xh\n", BA);
+    } else
+        printf("Base address UNIOxx-5 available:%Xh\n", BA);
 
     BA = BA + 0xA000;
 
@@ -93,7 +87,7 @@ void main(int arg, char **av) {
         }
 
         Event = 0;
-        printf("\x1B\x3D\x21\x20");    // Goto xy (SmartLink)
+        printf("\n\n");    // Goto xy (SmartLink)
         // Enable interrupt on all input channels
         outportb (BA + 5, 0x7);
 

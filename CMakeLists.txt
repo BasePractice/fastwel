@@ -14,7 +14,6 @@ option(FASTWEL_TESTS "Сборка тестов" ON)
 option(FASTWEL_MEMORY_LEAK "Проверка по утечке памяти" ON)
 
 include_directories(src_c/common)
-set(MSDOS_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/msdos/include)
 
 if (MSVC)
     #Надо для Catch2, т.к. в нем используются min и max из std, а Windows его переопределяет
@@ -59,6 +58,7 @@ if (WIN32)
     else ()
         set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/.build_w64")
     endif ()
+    set(MSDOS_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/msdos/include)
 elseif (APPLE)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/.build_m64")
 elseif (UNIX)
@@ -67,6 +67,7 @@ elseif (UNIX)
     add_definitions(-DUNIX)
     add_definitions(-DSIZEOF_VOID_P=8)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/.build_l64")
+    set(MSDOS_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/src_c/msdos_linux)
 endif ()
 
 if (FASTWEL_MEMORY_LEAK)
